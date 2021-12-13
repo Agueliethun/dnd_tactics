@@ -1,0 +1,39 @@
+state/BoardSettings.java
+ state.BoardSettings
+state/action/TileTarget.java
+ state.action.TileTarget
+ state.action.TileTarget$Shape
+state/Position.java
+ state.Position
+game/MainRunner.java
+ game.MainRunner
+state/action/ActionInstance.java
+ state.action.ActionInstance
+state/action/effect/HPEffect.java
+ state.action.effect.HPEffect
+state/GameState.java
+ state.GameState
+ state.GameState$State
+state/Piece.java
+ state.Piece
+state/action/Ability.java
+ state.action.Ability
+game/Player.java
+ game.Player
+state/action/MoveAction.java
+ state.action.MoveAction
+game/AIPlayer.java
+ game.AIPlayer
+state/action/effect/Effect.java
+ state.action.effect.Effect
+state/action/DoNothingAction.java
+ state.action.DoNothingAction
+game/HumanPlayer.java
+ game.HumanPlayer
+state/action/Action.java
+ state.action.Action
+ state.action.Action$Phase
+game/GameRunner.java
+ game.GameRunner
+state/action/AttackAction.java
+ state.action.AttackAction
