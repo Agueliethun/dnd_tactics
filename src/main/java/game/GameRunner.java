@@ -4,7 +4,7 @@ import state.BoardSettings;
 import state.GameState;
 
 public class GameRunner {
-    private GameState gameState;
+    private final GameState gameState;
 
     public GameRunner(Player player1, Player player2, BoardSettings settings) {
         this.gameState = new GameState(settings, player1, player2);
@@ -15,5 +15,9 @@ public class GameRunner {
             gameState.doTurn();
         }
         System.out.println(gameState.getState());
+    }
+
+    public GameState getGameState() {
+        return gameState;
     }
 }

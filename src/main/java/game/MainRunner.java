@@ -3,6 +3,7 @@ package game;
 import state.BoardSettings;
 import state.Piece;
 import state.Position;
+import ui.UIEngine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,9 @@ public class MainRunner {
         BoardSettings settings = new BoardSettings(5, pieces);
 
         GameRunner runner = new GameRunner(new HumanPlayer(), new HumanPlayer(), settings);
+
+        UIEngine.setInstance(new UIEngine(runner.getGameState()));
+
         runner.runGame();
     }
 }

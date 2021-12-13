@@ -1,12 +1,3 @@
-state/BoardSettings.java
- state.BoardSettings
-state/action/TileTarget.java
- state.action.TileTarget
- state.action.TileTarget$Shape
-state/Position.java
- state.Position
-game/MainRunner.java
- game.MainRunner
 state/action/ActionInstance.java
  state.action.ActionInstance
 state/action/effect/HPEffect.java
@@ -18,8 +9,12 @@ state/Piece.java
  state.Piece
 state/action/Ability.java
  state.action.Ability
+game/MainRunner.java
+ game.MainRunner
 game/Player.java
  game.Player
+state/BoardSettings.java
+ state.BoardSettings
 state/action/MoveAction.java
  state.action.MoveAction
 game/AIPlayer.java
@@ -33,7 +28,12 @@ game/HumanPlayer.java
 state/action/Action.java
  state.action.Action
  state.action.Action$Phase
+state/action/TileTarget.java
+ state.action.TileTarget
+ state.action.TileTarget$Shape
 game/GameRunner.java
  game.GameRunner
+state/Position.java
+ state.Position
 state/action/AttackAction.java
  state.action.AttackAction
