@@ -3,6 +3,7 @@ package state;
 import game.Player;
 import state.action.Action;
 import state.action.ActionInstance;
+import ui.UIEngine;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,33 +55,16 @@ public class GameState {
         }
     }
 
-    public void printBoard() {
-        for (int y = 0; y < settings.getBoardSize(); y++) {
-            for (int x = 0; x < settings.getBoardSize(); x++) {
-                Character visual = ' ';
-
-                Piece piece = getPieceAtPosition(new Position(x, y));
-                String color = "\u001B[37m";
-                if (piece != null) {
-                    visual = piece.getVisual();
-                    color = piece.getOwningPlayer() == player1 ? "\u001B[31m" : "\u001B[34m";
-                }
-
-                System.out.print("[");
-                System.out.print(color + visual + "\u001B[37m");
-                System.out.print("] ");
-            }
-            System.out.println();
-        }
-    }
-
     public void doTurn() {
-        printBoard();
+        UIEngine.getInstance().update(this);
         setTurnPhase(Action.Phase.MOVE);
-        applyAction(playerTurn.getAction(this));  //move
-        printBoard();
+        ActionInstance moveAction = playerTurn.getAction(this);
+        Piece piece = moveAction.getActor();
+        applyAction(moveAction);  //move
+        UIEngine.getInstance().update(this);
         setTurnPhase(Action.Phase.ATTACK);
-        applyAction(playerTurn.getAction(this));  //action
+        applyAction(playerTurn.getAction(this, piece));  //action
+        UIEngine.getInstance().update(this);
 
         recalculateState();
 

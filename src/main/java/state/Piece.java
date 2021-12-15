@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Piece {
-    private Character visual;
+    private String visual;
 
     private int hp;
     private int move;
@@ -20,7 +20,7 @@ public class Piece {
     private Player owningPlayer;
     private Position position;
 
-    public Piece(int hp, int move, int attack, boolean required, List<Ability> abilities, Character visual) {
+    public Piece(int hp, int move, int attack, boolean required, List<Ability> abilities, String visual) {
         this.hp = hp;
         this.move = move;
         this.attack = attack;
@@ -54,8 +54,8 @@ public class Piece {
     public List<Action> getAllActions() {
         List<Action> actions = new ArrayList<>();
 
-        actions.add(new MoveAction(move));
-        actions.add(new AttackAction(1));
+        if (move > 0 ) actions.add(new MoveAction(move));
+        if (attack > 0 ) actions.add(new AttackAction(1));
         actions.add(new DoNothingAction(Action.Phase.MOVE));
         actions.add(new DoNothingAction(Action.Phase.ATTACK));
 
@@ -116,11 +116,11 @@ public class Piece {
         this.required = required;
     }
 
-    public Character getVisual() {
+    public String getVisual() {
         return visual;
     }
 
-    public void setVisual(Character visual) {
+    public void setVisual(String visual) {
         this.visual = visual;
     }
 }

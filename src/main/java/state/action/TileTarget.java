@@ -39,7 +39,7 @@ public class TileTarget {
                 positions.add(currentPosition);
 
                 for (Position adjacent : currentPosition.getAdjacent(worldSize)) {
-                    positions.addAll(getCircle(positions, adjacent, currentSize - 1, worldSize));
+                    getCircle(positions, adjacent, currentSize - 1, worldSize);
                 }
             }
         }
