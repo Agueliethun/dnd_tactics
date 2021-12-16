@@ -28,6 +28,8 @@ public class GameState {
     private Action.Phase turnPhase;
     private State state;
 
+    private Piece currentTurnPiece;
+
     public GameState(BoardSettings settings, Player player1, Player player2) {
         this.settings = settings;
         this.player1 = player1;
@@ -56,19 +58,24 @@ public class GameState {
     }
 
     public void doTurn() {
+        currentTurnPiece = null;
         UIEngine.getInstance().update(this);
-        setTurnPhase(Action.Phase.MOVE);
         ActionInstance moveAction = playerTurn.getAction(this);
-        Piece piece = moveAction.getActor();
+        currentTurnPiece = moveAction.getActor();
         applyAction(moveAction);  //move
         UIEngine.getInstance().update(this);
-        setTurnPhase(Action.Phase.ATTACK);
-        applyAction(playerTurn.getAction(this, piece));  //action
+        applyAction(playerTurn.getAction(this));  //action
         UIEngine.getInstance().update(this);
-
+        tick();
         recalculateState();
+    }
 
-        setPlayerTurn((playerTurn == player1) ? player2 : player1);
+    private void tick() {
+        for (Piece piece : getAllPieces()) {
+            if (piece.getOwningPlayer() == playerTurn) {
+                piece.tick();
+            }
+        }
     }
 
     private void recalculateState() {
@@ -84,6 +91,12 @@ public class GameState {
 
     public void applyAction(ActionInstance action) {
         action.apply(this);
+        if (turnPhase == Action.Phase.MOVE) {
+            setTurnPhase(Action.Phase.ATTACK);
+        } else if (turnPhase == Action.Phase.ATTACK) {
+            setTurnPhase(Action.Phase.MOVE);
+            setPlayerTurn((playerTurn == player1) ? player2 : player1);
+        }
     }
 
     public Piece getPieceAtPosition(Position targetPostion) {
@@ -95,6 +108,16 @@ public class GameState {
         return null;
     }
 
+    public List<Piece> getValidTurnPieces() {
+        if (currentTurnPiece != null) {
+            return List.of(currentTurnPiece);
+        } else {
+            List<Piece> playerPieces = getPlayerPieces().get(playerTurn);
+            playerPieces.removeIf(piece -> piece.getHp() <= 0);
+            return playerPieces;
+        }
+    }
+
     public boolean isPositionFree(Position targetPostion) {
         for (Piece piece : getAllPieces()) {
             if (piece.getPosition().equals(targetPostion) && piece.getHp() > 0) {
@@ -104,7 +127,7 @@ public class GameState {
         return true;
     }
 
-    private List<Piece> getAllPieces() {
+    public List<Piece> getAllPieces() {
         List<Piece> allPieces = new ArrayList<>();
         for (Map.Entry<Player, List<Piece>> entry : playerPieces.entrySet()) {
             allPieces.addAll(entry.getValue());

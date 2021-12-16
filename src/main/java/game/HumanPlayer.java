@@ -16,15 +16,13 @@ public class HumanPlayer implements Player {
     @Override
     public ActionInstance getAction(GameState state) {
         Piece piece = null;
-        while (piece == null || piece.getOwningPlayer() != state.getPlayerTurn() || piece.getHp() <= 0) {
+        if (state.getValidTurnPieces().size() == 1) {
+            piece = state.getValidTurnPieces().get(0);
+        }
+        while (piece == null || !state.getValidTurnPieces().contains(piece)) {
             piece = state.getPieceAtPosition(getPositionFromUser());
         }
 
-        return getAction(state, piece);
-    }
-
-    @Override
-    public ActionInstance getAction(GameState state, Piece piece) {
         List<Action> actions = piece.getAllActions();
         actions.removeIf(a -> a.getPhase() != state.getTurnPhase());
         Action action = getListSelectionFromUser(actions);

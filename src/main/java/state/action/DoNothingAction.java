@@ -1,6 +1,10 @@
 package state.action;
 
 import state.GameState;
+import state.Piece;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DoNothingAction extends Action {
     public DoNothingAction(Phase phase) {
@@ -20,5 +24,10 @@ public class DoNothingAction extends Action {
     @Override
     public boolean apply(ActionInstance actionInstance, GameState gameState) {
         return true;
+    }
+
+    @Override
+    public List<Piece> getTargets(ActionInstance actionInstance, GameState gameState) {
+        return new ArrayList<>();
     }
 }

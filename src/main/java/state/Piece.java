@@ -4,6 +4,7 @@ import game.Player;
 import state.action.*;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class Piece {
@@ -16,6 +17,7 @@ public class Piece {
     private boolean required;
 
     private List<Ability> abilities;
+    private List<Buff> buffs;
 
     private Player owningPlayer;
     private Position position;
@@ -26,6 +28,7 @@ public class Piece {
         this.attack = attack;
         this.required = required;
         this.abilities = abilities;
+        this.buffs = new ArrayList<>();
         this.visual = visual;
     }
 
@@ -39,14 +42,23 @@ public class Piece {
 
     public Piece copy() {
         List<Ability> copyAbilities = new ArrayList<>();
-
         for (Ability ability : abilities) {
             copyAbilities.add(ability.copy());
         }
 
+        List<Buff> copyBuffs = new ArrayList<>();
+        for (Buff buff : buffs) {
+            copyBuffs.add(buff.copy());
+        }
+
         Piece retPiece = new Piece(hp, move, attack, required, copyAbilities, visual);
-        retPiece.setOwningPlayer(owningPlayer);
-        retPiece.setPosition(position);
+        if (owningPlayer != null) {
+            retPiece.setOwningPlayer(owningPlayer);
+        }
+        if (position != null) {
+            retPiece.setPosition(position.copy());
+        }
+        retPiece.setBuffs(copyBuffs);
 
         return retPiece;
     }
@@ -54,12 +66,12 @@ public class Piece {
     public List<Action> getAllActions() {
         List<Action> actions = new ArrayList<>();
 
-        if (move > 0 ) actions.add(new MoveAction(move));
-        if (attack > 0 ) actions.add(new AttackAction(1));
+        if (getMove() > 0 ) actions.add(new MoveAction(getMove()));
+        if (getAttack() > 0 ) actions.add(new AttackAction(1));
         actions.add(new DoNothingAction(Action.Phase.MOVE));
         actions.add(new DoNothingAction(Action.Phase.ATTACK));
 
-        actions.addAll(abilities);
+        actions.addAll(getAbilities());
 
         return actions;
     }
@@ -77,7 +89,14 @@ public class Piece {
     }
 
     public int getMove() {
-        return move;
+        Modifier moveModifier = new Modifier(1, 0);
+        for (Buff buff : buffs) {
+            Modifier buffMoveMod = buff.getMovementMod();
+            if (buffMoveMod != null) {
+                moveModifier = moveModifier.addModifier(buffMoveMod);
+            }
+        }
+        return moveModifier.getResult(move);
     }
 
     public void setMove(int move) {
@@ -85,7 +104,14 @@ public class Piece {
     }
 
     public int getAttack() {
-        return attack;
+        Modifier attackModifier = new Modifier(1, 0);
+        for (Buff buff : buffs) {
+            Modifier buffAttackMod = buff.getAttackMod();
+            if (buffAttackMod != null) {
+                attackModifier = attackModifier.addModifier(buffAttackMod);
+            }
+        }
+        return attackModifier.getResult(attack);
     }
 
     public void setAttack(int attack) {
@@ -93,11 +119,19 @@ public class Piece {
     }
 
     public List<Ability> getAbilities() {
-        return abilities;
+        List<Ability> allAbilities = new ArrayList<>(abilities);
+        for (Buff buff : buffs) {
+            allAbilities.addAll(buff.getNewAbilities());
+        }
+        return allAbilities;
     }
 
     public void setAbilities(List<Ability> abilities) {
         this.abilities = abilities;
+    }
+
+    public void addAbility(Ability newAbility) {
+        abilities.add(newAbility);
     }
 
     public Position getPosition() {
@@ -122,5 +156,18 @@ public class Piece {
 
     public void setVisual(String visual) {
         this.visual = visual;
+    }
+
+    public List<Buff> getBuffs() {
+        return buffs;
+    }
+
+    public void setBuffs(List<Buff> buffs) {
+        this.buffs = buffs;
+    }
+
+    public void tick() {
+        buffs.forEach(buff -> buff.setDuration(buff.getDuration() - 1));
+        buffs.removeIf(buff -> buff.getDuration() <= 0);
     }
 }

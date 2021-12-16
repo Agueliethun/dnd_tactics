@@ -32,6 +32,15 @@ public class Ability extends Action {
 
     @Override
     public boolean apply(ActionInstance actionInstance, GameState gameState) {
+        for (Piece piece : getTargets(actionInstance, gameState)) {
+            effect.apply(piece);
+        }
+
+        return true;
+    }
+
+    @Override
+    public List<Piece> getTargets(ActionInstance actionInstance, GameState gameState) {
         List<Position> positions = tileTarget.getPositions(actionInstance.getTargetPostion(), gameState.getSettings().getBoardSize());
         List<Piece> affectedPieces = new ArrayList<>();
 
@@ -42,11 +51,6 @@ public class Ability extends Action {
             }
         }
 
-        for (Piece piece : affectedPieces) {
-            effect.apply(piece);
-        }
-
-        return false;
+        return affectedPieces;
     }
-
 }

@@ -69,4 +69,8 @@ public class Position {
     public Position flip(int worldSize) {
         return new Position(worldSize - 1 - x, worldSize - 1 - y);
     }
+
+    public Position copy() {
+        return new Position(x, y);
+    }
 }

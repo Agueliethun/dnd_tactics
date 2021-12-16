@@ -1,6 +1,9 @@
 package state.action;
 
 import state.GameState;
+import state.Piece;
+
+import java.util.List;
 
 public abstract class Action {
 
@@ -38,4 +41,6 @@ public abstract class Action {
     public void setRange(int range) {
         this.range = range;
     }
+
+    public abstract List<Piece> getTargets(ActionInstance actionInstance, GameState gameState);
 }
